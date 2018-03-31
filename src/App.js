@@ -4,7 +4,7 @@ import './styles/index.css';
 import './styles/normalize.css';
 import './styles/skeleton.css';
 
-
+const headerImg = require('./assets/david-straight-341873-unsplash.jpg');
 const url = 'https://www.thecocktaildb.com/api/json/v1/1/random.php';
 
 class App extends Component {
@@ -23,67 +23,43 @@ class App extends Component {
     }
 
     componentDidMount() {
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                const drink = data.drinks[0];
-                console.log(drink);
-                let ingredients = [];
-                for (let i = 1; i < 15; i++) {
-                    let ingredientKey = "strIngredient" + i;
-                    let quantityKey = "strMeasure" + i;
-                    if(drink[ingredientKey] === null) return;
-                    if (drink[ingredientKey].length > 0) {
-                        ingredients.push({ingredient: drink[ingredientKey], quantity: drink[quantityKey]});
-                    }
-                }
-                this.setState({
-                    drink: {
-                        name: drink.strDrink,
-                        ingredients: ingredients,
-                        pic: drink.strDrinkThumb,
-                        instructions: drink.strInstructions
-                    }
-                });
-
-            })
+        this.getDrink();
     }
 
-    showMeAnother() {
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                const drink = data.drinks[0];
-                console.log(drink);
-                let ingredients = [];
-                for (let i = 1; i < 15; i++) {
-                    let ingredientKey = "strIngredient" + i;
-                    let quantityKey = "strMeasure" + i;
-                    if(drink[ingredientKey] === null) return;
-                    if (drink[ingredientKey].length > 0) {
-                        ingredients.push({
-                            ingredient: drink[ingredientKey],
-                            quantity: drink[quantityKey]
-                        });
-                    }
+    async getDrink() {
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            const drink = data.drinks[0];
+            let ingredients = [];
+            for (let i = 1; i < 15; i++) {
+                let ingredientKey = "strIngredient" + i;
+                let quantityKey = "strMeasure" + i;
+                if (drink[ingredientKey] != null && drink[ingredientKey].length > 0) {
+                    ingredients.push({ingredient: drink[ingredientKey], quantity: drink[quantityKey]});
                 }
-                this.setState({
-                    drink: {
-                        name: drink.strDrink,
-                        ingredients: ingredients,
-                        pic: drink.strDrinkThumb,
-                        instructions: drink.strInstructions
-                    }
-                });
+            }
+            this.setState({
+                drink: {
+                    name: drink.strDrink,
+                    ingredients: ingredients,
+                    pic: drink.strDrinkThumb,
+                    instructions: drink.strInstructions
+                }
+            });
 
-            })    }
+        } catch (er) {
+            console.error(er);
+        }
+    };
 
     render() {
         const drink = this.state.drink;
         return (
             <div className="App">
                 <header className="App-header">
-                    <img src={require("./assets/david-straight-341873-unsplash.jpg")} className="App-logo" alt="David Straight on Unsplash"/>
+                    <img src={headerImg} className="App-logo" alt="David Straight on Unsplash"
+                         title="Photo by David Straight on Unsplash"/>
                 </header>
                 <section className="drinkBox">
                     <h1>{drink.name}</h1>
@@ -92,11 +68,11 @@ class App extends Component {
                         {drink.ingredients.map((ingredient) =>
                             <li key={ingredient.ingredient}>
                                 <span>{ingredient.ingredient}</span>
-                                <span>{(ingredient.quantity) ? " : " + ingredient.quantity : null }</span>
+                                <span>{(ingredient.quantity).trim() ? (" : " + ingredient.quantity) : null}</span>
                             </li>)}
                     </ul>
                     <p className="instructions">{drink.instructions}</p>
-                    <button onClick={() => this.showMeAnother()}>Show Me Another</button>
+                    <button onClick={() => this.getDrink()}>Show Me Another</button>
                 </section>
             </div>
         );
