@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 
@@ -10,7 +9,13 @@ class App extends Component {
         super(props);
 
         this.state = {
-            drink: []
+            drink: {
+                name: '',
+                pic: '',
+                ingredients: [],
+                quantities: [],
+                instructions: ''
+            }
         }
     }
 
@@ -19,8 +24,24 @@ class App extends Component {
             .then((response) => response.json())
             .then((data) => {
                 const drink = data.drinks[0];
-                this.setState({drink: drink});
                 console.log(drink);
+                let ingredients = [];
+                for (let i = 1; i < 15; i++) {
+                    let ingredientKey = "strIngredient" + i;
+                    let quantityKey = "strMeasure" + i;
+                    if (drink[ingredientKey].length > 0) {
+                        ingredients.push({ingredient: drink[ingredientKey], quantity: drink[quantityKey]});
+                    }
+                }
+                this.setState({
+                    drink: {
+                        name: drink.strDrink,
+                        ingredients: ingredients,
+                        pic: drink.strDrinkThumb,
+                        instructions: drink.strInstructions
+                    }
+                });
+
             })
     }
 
@@ -29,13 +50,16 @@ class App extends Component {
         return (
             <div className="App">
                 <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h1 className="App-title">Welcome to React</h1>
+                    <img src={require("./assets/david-straight-341873-unsplash.jpg")} className="App-logo" alt="logo"/>
                 </header>
-                <section>
-                    <h1>{drink.strDrink}</h1>
-                    <img className="drinkPic" alt={drink.strDrink} src={drink.strDrinkThumb}/>
-
+                <section className="drinkBox">
+                    <h1>{drink.name}</h1>
+                    <img className="drinkPic" alt={drink.name} src={drink.pic}/>
+                    <ul className="ingredientList">
+                        {drink.ingredients.map((ingredient) =>
+                            <li key={ingredient.ingredient}>{ingredient.ingredient}: {ingredient.quantity}</li>)}
+                    </ul>
+                    <p className="instructions">{drink.instructions}</p>
                 </section>
             </div>
         );
