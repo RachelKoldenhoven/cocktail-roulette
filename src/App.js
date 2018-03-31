@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
-import './App.css';
+import './styles/App.css';
+import './styles/index.css';
+import './styles/normalize.css';
+import './styles/skeleton.css';
 
 
 const url = 'https://www.thecocktaildb.com/api/json/v1/1/random.php';
