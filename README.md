@@ -1,7 +1,6 @@
-Photo by John Cafazza on Unsplash bottles/bar
-Photo by Stéphan Valentin on Unsplash drinks
-Photo by Taylor Davidson on Unsplash bar/bartender
-Photo by David Straight on Unsplash  fancy bar/ copper mugs
+Simple web app to help you choose a cocktail.  Deployed [here](https://cocktailroulette.herokuapp.com/).  
+Cocktail data from [The Cocktail DB](https://www.thecocktaildb.com/api.php).  
+Photo by David Straight on [Unsplash](https://unsplash.com/). 
 
 
 
